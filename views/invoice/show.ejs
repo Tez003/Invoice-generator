@@ -1,0 +1,49 @@
+<% layout('layouts/boilerplate') %>
+        <h3>Our Invoices </h3>
+
+        <div class="Container">
+            
+
+        </div>
+        <h4><%= invoice._id %></h4>
+        <h4> <%= invoice.First_name %></h4>
+        <h4> <%= invoice.city %></h4>
+        <div>
+            <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam earum delectus dignissimos harum optio accusantium dolore, eligendi fugiat molestias obcaecati nobis magni blanditiis voluptatibus aperiam cupiditate? Iusto rerum animi cupiditate?
+            </p>
+            <a href="/invoice">All invoices</a>
+        </div>
+ 
+        <form action ="/invoice/<%= invoice._id%>?_method=DELETE" method="POST">
+        
+            <button>Delete</button>
+        </form>
+        <a href="/invoice/<%= invoice._id %>/edit">Edit invoices</a>
+        <a href="/invoice/<%=invoice._id %>/product">Add product</a>
+
+
+    <!--    <div class="container">
+            <form action="/invoice/<%= invoice._id%>/product" method = "POST" class="row gy-2 gx-3 align-items-center">
+                <div class="row g-3">
+                    <div class="col-sm-7">
+                      <input type="text" class="form-control" name="prdct[Product_name]" placeholder="City" aria-label="City">
+                    </div>
+                    <div class="col-sm">
+                      <input type="number"" class="form-control" name="prdct[Quantity]" placeholder="State" aria-label="State">
+                    </div>
+                    <div class="col-sm">
+                      <input type="number" class="form-control" name="prdct[Price]" placeholder="Zip" aria-label="Zip">
+                    </div>
+                  </div>
+                <div class="col-auto">
+                  <button type="submit" class="btn btn-primary">Add more</button>
+                </div>
+              </form>
+
+        </div>
+
+        
+
+
+        

@@ -1,0 +1,57 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="container">
+    
+        <table class="table">
+            <thead>
+              <tr>
+                
+                <th scope="col-sm-7">Product</th>
+                <th scope="col-sm">quantity</th>
+                <th scope="col-sm">price</th>
+                <th scope="col-sm">total Price</th>
+              </tr>
+            </thead>
+            <tbody>
+                <% for (let product of invoice.products ){%>
+              <tr>
+               
+                <td><%= product.Product_name%></td>
+                <td><%= product.Quantity%></td>
+                <td><%= product.Price%></td>
+                <td><%= product.Price*product.Quantity%></td>
+              </tr>
+              <% }%>
+              <% var quant=0, total=0%>
+              <% for (let product of invoice.products ){
+                    quant = quant + product.Quantity;
+                    total = total + product.Price*product.Quantity;
+                 }%>
+                 <tr>
+                    <td><strong>Total</strong></td>
+                    <td><strong><%=quant%></strong></td>
+                    <td><strong>-</strong></td>
+                    <td><strong><%= total%></strong></td>
+                </tr>
+            </tbody>
+          </table>
+
+    
+      <form action="/invoice/<%= invoice._id%>/product" method = "POST" class="row gy-2 gx-3 align-items-center">
+        <div class="row g-3">
+            <div class="col-sm-7">
+              <input type="text" class="form-control" name="prdct[Product_name]" placeholder="Product" aria-label="City">
+            </div>
+            <div class="col-sm">
+              <input type="number"" class="form-control" name="prdct[Quantity]" placeholder="Quantity" aria-label="State">
+            </div>
+            <div class="col-sm">
+              <input type="number" class="form-control" name="prdct[Price]" placeholder="Price" aria-label="Zip">
+            </div>
+          </div>
+        <div class="col-auto">
+          <button type="submit" class="btn btn-primary">Add more</button>
+          <button type="submit" class="btn btn-primary"><a href="/invoice/<%=invoice._id%>">View Invoice</a></button>
+        </div>
+      </form>
+</div>

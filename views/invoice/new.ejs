@@ -1,0 +1,53 @@
+<% layout('layouts/boilerplate') %>
+        <h1>enter the Client details</h1>
+        
+    <div class="container">
+        <form action="/invoice" method = "POST" class="row g-3 m-4">
+
+            <div class="col-md-6">
+                <label for="First name" class="form-label">First name</label>
+                <input type="text" class="form-control" name="invoice[First_name]"  aria-label="First name">
+              </div>
+
+              <div class="col-md-6">
+                <label for="Last name" class="form-label">Last name</label>
+                <input type="text" class="form-control" name="invoice[Last_name]"  aria-label="First name">
+              </div>
+
+            <div class="col-md-6">
+              <label for="inputEmail4" class="form-label">Email</label>
+              <input type="email" class="form-control" name="invoice[Email]" id="inputEmail4">
+            </div>
+
+            <div class="col-md-6">
+              <label for="inputContact" class="form-label">Contact Number</label>
+              <input type="number" class="form-control" name="invoice[Contact]" id="inputnumber">
+            </div>
+
+            <div class="col-12">
+              <label for="inputAddress" class="form-label">Address</label>
+              <input type="text" class="form-control" id="inputAddress" name="invoice[Address]" placeholder="1234 Main St">
+            </div>
+
+            
+            <div class="col-md-6">
+              <label for="inputCity" class="form-label">City</label>
+              <input type="text" class="form-control" name="invoice[city]" id="inputCity">
+            </div>
+
+            <div class="col-md-4">
+              <label for="inputState" class="form-label">State</label>
+              <input type="text" class="form-control" name="invoice[state]" id="inputState">
+            </div>
+
+            <div class="col-md-2">
+              <label for="inputZip" class="form-label">Zip</label>
+              <input type="text" class="form-control" name="invoice[pincode]" id="inputZip">
+            </div>
+
+            
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary">Add Client</button>
+            </div>
+        </form>
+    </div>
