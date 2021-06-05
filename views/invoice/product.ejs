@@ -20,6 +20,16 @@
                 <td><%= product.Quantity%></td>
                 <td><%= product.Price%></td>
                 <td><%= product.Price*product.Quantity%></td>
+                <td><%= invoice._id%></td>
+                <td><%= product._id%></td>
+                <td>
+                <form action ="/invoice/<%= invoice._id%>/product?_method=DELETE" method="POST">
+                  <div style="text-align: center;">
+                    <input type="text" name="id" value="<%= product._id%>" disabled hidden> 
+                    <button class=" btn btn-warning" onclick="return confirm('Are you sure to delete?')"><i class="fas fa-minus-circle"></i></button>
+                  </div>
+                  </form>
+                </td>
               </tr>
               <% }%>
               <% var quant=0, total=0%>
@@ -37,21 +47,31 @@
           </table>
 
     
-      <form action="/invoice/<%= invoice._id%>/product" method = "POST" class="row gy-2 gx-3 align-items-center">
+      <form action="/invoice/<%= invoice._id%>/product" method = "POST" class="row gy-2 gx-3 align-items-center validated-form" novalidate>
         <div class="row g-3">
             <div class="col-sm-7">
-              <input type="text" class="form-control" name="prdct[Product_name]" placeholder="Product" aria-label="City">
+              <input type="text" class="form-control" name="prdct[Product_name]" placeholder="Product" aria-label="Product_name" required>
+              <div class="invalid-feedback">
+                Please provide the Product details.
+              </div>
             </div>
             <div class="col-sm">
-              <input type="number"" class="form-control" name="prdct[Quantity]" placeholder="Quantity" aria-label="State">
+              <input type="number"" class="form-control" name="prdct[Quantity]" placeholder="Quantity" aria-label="Quantity" required>
+              <div class="invalid-feedback">
+                Please provide the Quantity.
+              </div>
             </div>
             <div class="col-sm">
-              <input type="number" class="form-control" name="prdct[Price]" placeholder="Price" aria-label="Zip">
+              <input type="number" class="form-control" name="prdct[Price]" placeholder="Price" aria-label="Price" required>
+              <div class="invalid-feedback">
+                Please provide the Price.
+              </div>           
             </div>
           </div>
         <div class="col-auto">
-          <button type="submit" class="btn btn-primary">Add more</button>
-          <button type="submit" class="btn btn-primary"><a href="/invoice/<%=invoice._id%>">View Invoice</a></button>
+          <button type="submit" class="btn btn-success">Add Product</button>
+          <a href="/invoice/<%= invoice._id %>" class=" btn btn-info" >View invoice</a>
+              
         </div>
       </form>
 </div>

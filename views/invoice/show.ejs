@@ -1,28 +1,84 @@
 <% layout('layouts/boilerplate') %>
-        <h3>Our Invoices </h3>
-
-        <div class="Container">
-            
-
-        </div>
-        <h4><%= invoice._id %></h4>
-        <h4> <%= invoice.First_name %></h4>
-        <h4> <%= invoice.city %></h4>
-        <div>
-            <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam earum delectus dignissimos harum optio accusantium dolore, eligendi fugiat molestias obcaecati nobis magni blanditiis voluptatibus aperiam cupiditate? Iusto rerum animi cupiditate?
-            </p>
-            <a href="/invoice">All invoices</a>
-        </div>
- 
-        <form action ="/invoice/<%= invoice._id%>?_method=DELETE" method="POST">
         
-            <button>Delete</button>
-        </form>
-        <a href="/invoice/<%= invoice._id %>/edit">Edit invoices</a>
-        <a href="/invoice/<%=invoice._id %>/product">Add product</a>
+        <div class="container">
+            <div class="jumbotron">
+              <h2 style="text-align: center;">Client Details</h2>
+              <div style="text-align: center;">
+           
+                <a href="/invoice" class=" btn btn-info">View all invoices</a>
+            </div>
+            </div>
+            <form action ="/invoice/<%= invoice._id%>?_method=DELETE" method="POST">
+              <div style="text-align: center;">
+                <button class=" btn btn-warning" onclick="return confirm('Are you sure to delete?')">Delete Client details</button>
+              </div>
+        
+              
+          </form>
+            <form class="row jumbotron" style="background-color: white;">
+                
+              <div class="col-md-6">
+                  <label for="First name" class="form-label">First name</label>
+                  <input type="text" disabled class="form-control" name="invoice[First_name]" value = "<%= invoice.First_name %>" aria-label="First name">
+              </div>
 
+              <div class="col-md-6">
+                  <label for="Last name" class="form-label">Last name</label>
+                  <input type="text" disabled class="form-control" name="invoice[Last_name]" value = "<%= invoice.Last_name %>" aria-label="First name">
+              </div>
 
+              <div class="col-md-6">
+                  <label for="inputEmail4" class="form-label">Email</label>
+                  <input type="email" disabled class="form-control" name="invoice[Email]" value = "<%= invoice.Email %>" id="inputEmail4">
+              </div>
+
+              <div class="col-md-6">
+                  <label for="inputContact" class="form-label">Contact Number</label>
+                  <input type="number" disabled class="form-control" name="invoice[Contact]" value = "<%= invoice.Contact %>" id="inputnumber">
+              </div>
+
+              <div class="col-12">
+                  <label for="inputAddress" class="form-label">Address</label>
+                  <input type="text" disabled class="form-control" id="inputAddress" name="invoice[Address]" value = "<%= invoice.Address %>" placeholder="1234 Main St">
+              </div>
+
+              
+              <div class="col-md-6">
+                  <label for="inputCity" class="form-label">City</label>
+                  <input type="text" disabled class="form-control" name="invoice[city]" value = "<%= invoice.city %>"  id="inputCity">
+              </div>
+
+              <div class="col-md-4">
+                  <label for="inputState" class="form-label">State</label>
+                  <input type="text" disabled class="form-control" name="invoice[state]" value = "<%= invoice.state %>" id="inputState">
+              </div>
+
+              <div class="col-md-2">
+                  <label for="inputZip" class="form-label">Zip</label>
+                  <input type="text" disabled class="form-control" name="invoice[pincode]" value = "<%= invoice.pincode %>" id="inputZip">
+              </div>
+
+              <div class="col-6 my-3">
+                <a href="/invoice/<%= invoice._id %>/edit" class=" btn btn-outline-info" >Edit invoices</a>
+              
+              </div>
+              <div class="col-6 my-3">
+              <a href="/invoice/<%=invoice._id %>/product"  class=" btn btn-outline-info float-right">Add product</a>
+            </div>
+          </form>
+
+      
+        
+          <script>
+            function display_alert()
+            {
+            alert("deleting");
+            }
+            </script>
+ 
+       
+        
+      </div>
     <!--    <div class="container">
             <form action="/invoice/<%= invoice._id%>/product" method = "POST" class="row gy-2 gx-3 align-items-center">
                 <div class="row g-3">
