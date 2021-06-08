@@ -2,11 +2,25 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
+const session = require('express-session');
+const Joi = require('joi');
+const flash = require('connect-flash');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+
+
+
 const catchAsync = require('./utils/catchAsyn')
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override')
 const Invoice = require('./modules/invoice');
 const Product = require('./modules/product');
+const User = require('./modules/user');
+
+
+const invoiceRoutes = require('./routes/invoice');
+const productRoutes = require('./routes/product');
+const userRoutes = require('./routes/user');
 
 
 mongoose.connect('mongodb://localhost:27017/invoice-generator',
@@ -33,85 +47,50 @@ app.set('views', path.join(__dirname, 'views'))
 
 app.use(express.urlencoded({extended:true}));
 app.use(methodOverride('_method'))
+app.use(express.static( path.join(__dirname, 'public')))
+
+const sessionConfig = {
+	secret : "secret",
+	resave: false,
+	saveUninitialized: true,
+	cookie: {
+		httoOnly: true,
+		expires: Date.now() + 1000*60*60*24,
+		maxAge:1000*60*60*24
+	}
+
+}
+app.use(session(sessionConfig))
+app.use(flash());
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+app.use((req, res, next)=>{
+	res.locals.currentUser = req.user;
+	res.locals.success = req.flash('Success')
+	res.locals.error = req.flash('Error')
+	next();
+})
+
+
+
+app.use('/', userRoutes);
+app.use('/invoice', invoiceRoutes)
+app.use('/invoice/:id/product', productRoutes)
+
+
 
 app.get('/', (req, res) => {
 	res.render('home')
 });
 
 
-app.get('/invoice',  catchAsync(async(req, res) => {
-	
-	const invoices = await Invoice.find({});
-    res.render('invoice/index', {invoices})
-}));
 
-app.get('/invoice/new', (req, res)=>{
-	res.render('invoice/new')
-})
-
-app.post('/invoice', catchAsync(async(req, res, next)=>{
-	
-		if(!req.body.invoice) throw new ExpressError('Invalid Invoice data')
-		const invoice = new Invoice(req.body.invoice);
-		await invoice.save();
-		res.redirect(`/invoice/${invoice._id}`);
-	
-	
-	
-}))
-
-
-
-
-app.get('/invoice/:id',  catchAsync(async(req, res,) =>{
-	const invoice = await Invoice.findById(req.params.id)
-	res.render('invoice/show', {invoice});
-})); 
-
-app.get('/invoice/:id/edit',  catchAsync(async(req, res) =>{
-	const invoice = await Invoice.findById(req.params.id)
-	res.render('invoice/edit',{invoice});
-}));
-
-app.put('/invoice/:id',  catchAsync(async(req, res) =>{
-	const { id } = req.params;
-	const invoice = await Invoice.findByIdAndUpdate(id, {...req.body.invoice})
-	res.redirect(`/invoice/${invoice._id}/`);
-
-}));
-
-app.delete('/invoice/:id',  catchAsync(async(req, res) =>{
-	const { id } = req.params;
-	const invoice = await Invoice.findByIdAndDelete(id)
-	res.redirect('/invoice');
-
-}));
-
-app.get('/invoice/:id/product',  catchAsync(async(req, res)=>{
-	const invoice = await Invoice.findById(req.params.id).populate('products');
-	
-	res.render('invoice/product',{invoice})
-}));
-
-app.post('/invoice/:id/product',  catchAsync(async(req, res)=>{
-	if(!req.body.prdct) throw new ExpressError('Invalid Invoice data')
-	const invoice = await Invoice.findById(req.params.id);
-	const prdct = new Product(req.body.prdct);
-	invoice.products.push(prdct);
-	await prdct.save();
-	await invoice.save();
-	res.redirect(`/invoice/${invoice._id}/product`);
-}));
-app.delete('/invoice/:id/product',  catchAsync(async(req, res) =>{
-	 //const id  = req.body.id;
-	 console.log("hey");
-	//console.log(id);
-	/*const invoice = await Invoice.findById(req.params.id);
-	const product = await Product.findByIdAndDelete(id)
-	res.redirect(`/invoice/${invoice._id}/product`);*/
-	res.send("delete request")
-
-}));
 
 app.all('*', (req, res, next) =>{
 	next(new ExpressError('Page Not Found', 404))
@@ -119,8 +98,9 @@ app.all('*', (req, res, next) =>{
 })
 
 app.use((err, req, res, next) =>{
-	const {statusCode = 500, message = 'Somethig Went wrong'} = err;
-	res.status(statusCode).send(message);
+	const {statusCode = 500} = err;
+	if(!err.message) err.message = "Something went wrong!"
+	res.status(statusCode).render('error', {err});
 	//res.send("Error occurred");
 })
 

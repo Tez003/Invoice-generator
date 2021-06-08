@@ -10,6 +10,7 @@
                 <th scope="col-sm">quantity</th>
                 <th scope="col-sm">price</th>
                 <th scope="col-sm">total Price</th>
+                <th scope="col-sm">Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -20,13 +21,12 @@
                 <td><%= product.Quantity%></td>
                 <td><%= product.Price%></td>
                 <td><%= product.Price*product.Quantity%></td>
-                <td><%= invoice._id%></td>
-                <td><%= product._id%></td>
+          
                 <td>
-                <form action ="/invoice/<%= invoice._id%>/product?_method=DELETE" method="POST">
-                  <div style="text-align: center;">
-                    <input type="text" name="id" value="<%= product._id%>" disabled hidden> 
-                    <button class=" btn btn-warning" onclick="return confirm('Are you sure to delete?')"><i class="fas fa-minus-circle"></i></button>
+                <form action ="/invoice/<%= invoice._id%>/product/<%= product._id%>" method="POST">
+                  <div style="text-align: left;">
+                    <input type="text" name="id_prd" value="<%= product._id%>" disabled hidden> 
+                    <button style="text-align:left;" class=" btn btn-warning" onclick="return confirm('Are you sure to delete?')"><i class="fas fa-minus-circle"></i></button>
                   </div>
                   </form>
                 </td>
