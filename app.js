@@ -7,7 +7,9 @@ const Joi = require('joi');
 const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-
+const crypto = require('crypto');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 
 
 const catchAsync = require('./utils/catchAsyn')
@@ -21,6 +23,11 @@ const User = require('./modules/user');
 const invoiceRoutes = require('./routes/invoice');
 const productRoutes = require('./routes/product');
 const userRoutes = require('./routes/user');
+
+
+
+
+
 
 
 mongoose.connect('mongodb://localhost:27017/invoice-generator',
@@ -45,9 +52,14 @@ app.engine('ejs', ejsMate)
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'))
 
+app.use(express.json());
+
+
+
 app.use(express.urlencoded({extended:true}));
 app.use(methodOverride('_method'))
 app.use(express.static( path.join(__dirname, 'public')))
+app.use(cookieParser());
 
 const sessionConfig = {
 	secret : "secret",
@@ -65,6 +77,7 @@ app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
+
 passport.use(new LocalStrategy(User.authenticate()));
 
 passport.serializeUser(User.serializeUser());
@@ -82,6 +95,9 @@ app.use((req, res, next)=>{
 app.use('/', userRoutes);
 app.use('/invoice', invoiceRoutes)
 app.use('/invoice/:id/product', productRoutes)
+
+
+
 
 
 
@@ -103,6 +119,27 @@ app.use((err, req, res, next) =>{
 	res.status(statusCode).render('error', {err});
 	//res.send("Error occurred");
 })
+
+async function isLoggedin(req, res, next){
+    if (!req.isAuthenticated()) {
+        const accessToken = req.cookies.accessToken;
+
+        jwt.verify(accessToken, JWT_AUTH_TOKEN, async (err, phone) => {
+            if (phone) {
+                req.phone = phone;
+                next();
+            } else if (err.message === 'TokenExpiredError') {
+                return res.status(403).send({
+                    success: false,
+                    msg: 'Access token expired'
+                });
+            } else {
+                console.log(err);
+                return res.status(403).send({ err, msg: 'User not authenticated' });
+            }
+        });
+}
+}
 
 
 

@@ -11,9 +11,11 @@ const passport = require('passport');
 
 router.get('/', isLoggedIn,  catchAsync(async(req, res) => {
 	
-	const invoices = await Invoice.find({});
+	//const invoices = await Invoice.find({});
+	//const invoice = await Invoice.findById(req.params.id).populate('products');
+	const user = await User.findById(req.user._id).populate('invoices')
     
-    res.render('invoice/index', {invoices})
+    res.render('invoice/index', {user});
 }));
 
 router.get('/new', isLoggedIn, (req, res)=>{
@@ -38,16 +40,13 @@ router.post('/', isLoggedIn, catchAsync(async(req, res, next)=>{
 			const msg = error.details.map(el => el.message).join(',')
 			throw new ExpressError(msg, 400)
 		}*/
+		const user = await User.findById(req.user._id);
 		const invoice = new Invoice(req.body.invoice);
-		invoice.products.push(prdct);
-		await prdct.save();
+		user.invoices.push(invoice);
 		await invoice.save();
-		await invoice.save();
+		await user.save();
         req.flash('Success', 'Successfully added a new client');
 		res.redirect(`/invoice/${invoice._id}`);
-	
-	
-	
 }))
 
 
@@ -83,5 +82,14 @@ router.delete('/:id', isLoggedIn,  catchAsync(async(req, res) =>{
 	res.redirect('/invoice');
 
 }));
+
+router.get('/:id/invoice',  catchAsync(async(req, res) =>{
+	const {id} = req.params;
+	const invoice = await Invoice.findById(id).populate('products');
+
+	const user = await User.findOne({}, {'invoices._id': id});
+	res.render('invoice/invoice', {invoice, user});
+	
+}))
 
 module.exports = router;

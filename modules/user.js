@@ -8,7 +8,12 @@ const UserSchema = new Schema({
         required: true,
         unique: true
     },
-    products:[
+    phone:{
+      type:Number,
+      required:true,
+      unique: true
+    },
+    invoices:[
 		{
 			type: Schema.Types.ObjectId,
 			ref: 'Invoice'

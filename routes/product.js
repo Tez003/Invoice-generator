@@ -17,7 +17,6 @@ router.get('', isLoggedIn, catchAsync(async(req, res)=>{
 router.post('', isLoggedIn,  catchAsync(async(req, res)=>{
 	//if(!req.body.prdct) throw new ExpressError('Invalid Invoice data')
     const invoice = await Invoice.findById(req.params.id);
-	console.log(invoice);
 	const invoiceSchema = Joi.object({
 		prdct: Joi.object({
 			Product_name: Joi.string().required(),
